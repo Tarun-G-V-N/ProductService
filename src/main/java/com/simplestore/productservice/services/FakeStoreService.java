@@ -20,7 +20,11 @@ public class FakeStoreService implements ProductService{
 
     @Override
     public List<ProductResponseDTO> getAllProducts() {
-        return null;
+
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        String fakeStoreURL = "https://fakestoreapi.com/products";
+        ResponseEntity<ProductResponseDTO[]> productsResponse = restTemplate.getForEntity(fakeStoreURL, ProductResponseDTO[].class);
+        return List.of(productsResponse.getBody());
     }
 
     @Override

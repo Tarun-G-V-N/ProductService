@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class ProductServiceController {
         private ProductService productService;
@@ -29,7 +31,8 @@ public class ProductServiceController {
     @GetMapping("/products")
         public ResponseEntity getAllProducts() {
 
-            return ResponseEntity.ok("Still working on this");
+            List<ProductResponseDTO> productResponseDTOS = productService.getAllProducts();
+            return ResponseEntity.ok(productResponseDTOS);
         }
     }
 
