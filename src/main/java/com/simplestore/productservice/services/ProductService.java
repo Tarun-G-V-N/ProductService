@@ -10,7 +10,7 @@ public interface ProductService {
 
     List<ProductResponseDTO> getAllProducts();
     ProductResponseDTO getProductById(int id);
-    Product createProduct(ProductRequestDTO product);
+    ProductResponseDTO createProduct(ProductRequestDTO product);
     Product updateProduct(ProductRequestDTO product);
     Product deleteProduct(ProductRequestDTO product);
 

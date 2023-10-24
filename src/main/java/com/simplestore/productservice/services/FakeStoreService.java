@@ -2,6 +2,7 @@ package com.simplestore.productservice.services;
 
 import com.simplestore.productservice.dtos.ProductRequestDTO;
 import com.simplestore.productservice.dtos.ProductResponseDTO;
+import com.simplestore.productservice.exceptions.ProductNotFoundException;
 import com.simplestore.productservice.models.Product;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,12 @@ public class FakeStoreService implements ProductService{
     }
 
     @Override
-    public ProductResponseDTO getProductById(int id) {
+    public ProductResponseDTO getProductById(int id) throws ProductNotFoundException{
+
+        if(id > 20) {
+            throw new ProductNotFoundException(id);
+        }
+
         RestTemplate restTemplate = restTemplateBuilder.build();
         String fakeStoreURL = "https://fakestoreapi.com/products/" + id;
         ResponseEntity<ProductResponseDTO> productResponse = restTemplate.getForEntity(fakeStoreURL, ProductResponseDTO.class);
@@ -37,8 +43,11 @@ public class FakeStoreService implements ProductService{
     }
 
     @Override
-    public Product createProduct(ProductRequestDTO product) {
-        return null;
+    public ProductResponseDTO createProduct(ProductRequestDTO productRequestDTO) {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        String fakeStoreURL = "https://fakestoreapi.com/products/";
+        ResponseEntity<ProductResponseDTO> productResponse = restTemplate.postForEntity(fakeStoreURL, productRequestDTO, ProductResponseDTO.class);
+        return productResponse.getBody();
     }
 
     @Override
