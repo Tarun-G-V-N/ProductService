@@ -5,8 +5,11 @@ import com.simplestore.productservice.dtos.ProductResponseDTO;
 import com.simplestore.productservice.exceptions.ProductNotFoundException;
 import com.simplestore.productservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -21,11 +24,17 @@ public class ProductServiceController {
         }
 
         @GetMapping("/products/{id}")
-        public ResponseEntity getTheProduct(@PathVariable int id) throws ProductNotFoundException {
+        public ResponseEntity getTheProduct(@PathVariable int id) throws ProductNotFoundException{
 
             ProductResponseDTO productResponseDTO = productService.getProductById(id);
-
             return ResponseEntity.ok(productResponseDTO);
+//            try {
+//                ProductResponseDTO productResponseDTO = productService.getProductById(id);
+//                return ResponseEntity.ok(productResponseDTO);
+//            }
+//            catch (ProductNotFoundException exception) {
+//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product with ID: "+id+" not available in the store!!");
+//            }
         }
 
         @GetMapping("/products")
