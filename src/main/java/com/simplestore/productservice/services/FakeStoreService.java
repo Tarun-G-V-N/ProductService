@@ -1,62 +1,75 @@
 package com.simplestore.productservice.services;
 
+import com.simplestore.productservice.clients.FakeStoreClient;
+import com.simplestore.productservice.dtos.FakeStoreProductRequestDTO;
+import com.simplestore.productservice.dtos.FakeStoreProductResponseDTO;
 import com.simplestore.productservice.dtos.ProductRequestDTO;
 import com.simplestore.productservice.dtos.ProductResponseDTO;
 import com.simplestore.productservice.exceptions.ProductNotFoundException;
-import com.simplestore.productservice.models.Product;
+import com.simplestore.productservice.mappers.ProductMapper;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.simplestore.productservice.utils.ProductUtil.isNull;
 
 @Service
 public class FakeStoreService implements ProductService{
     private final RestTemplateBuilder restTemplateBuilder;
-    public FakeStoreService (RestTemplateBuilder restTemplateBuilder) {
+    private final FakeStoreClient fakeStoreClient;
+    public FakeStoreService (RestTemplateBuilder restTemplateBuilder, FakeStoreClient fakeStoreClient) {
 
         this.restTemplateBuilder = restTemplateBuilder;
+        this.fakeStoreClient = fakeStoreClient;
     }
 
     @Override
     public List<ProductResponseDTO> getAllProducts() {
 
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        String fakeStoreURL = "https://fakestoreapi.com/products";
-        ResponseEntity<ProductResponseDTO[]> productsResponse = restTemplate.getForEntity(fakeStoreURL, ProductResponseDTO[].class);
-        return List.of(productsResponse.getBody());
+        List<FakeStoreProductResponseDTO> fakeStoreProductResponseDTOS = fakeStoreClient.getAllProducts();
+        List<ProductResponseDTO> productResponseDTOS = new ArrayList<>();
+
+        for(FakeStoreProductResponseDTO fakeStoreProductResponseDTO : fakeStoreProductResponseDTOS) {
+
+            productResponseDTOS.add(ProductMapper.getProductResponseDTO(fakeStoreProductResponseDTO));
+        }
+
+        return productResponseDTOS;
     }
 
     @Override
     public ProductResponseDTO getProductById(int id) throws ProductNotFoundException{
 
-        if(id > 20) {
-            throw new ProductNotFoundException(id);
-        }
-
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        String fakeStoreURL = "https://fakestoreapi.com/products/" + id;
-        ResponseEntity<ProductResponseDTO> productResponse = restTemplate.getForEntity(fakeStoreURL, ProductResponseDTO.class);
-
-        return productResponse.getBody();
+        FakeStoreProductResponseDTO fakeStoreProductResponseDTO = fakeStoreClient.getProductById(id);
+        if(isNull(fakeStoreProductResponseDTO)) throw new ProductNotFoundException(id);
+        ProductResponseDTO productResponseDTO = ProductMapper.getProductResponseDTO(fakeStoreProductResponseDTO);
+        return productResponseDTO;
     }
 
     @Override
     public ProductResponseDTO createProduct(ProductRequestDTO productRequestDTO) {
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        String fakeStoreURL = "https://fakestoreapi.com/products/";
-        ResponseEntity<ProductResponseDTO> productResponse = restTemplate.postForEntity(fakeStoreURL, productRequestDTO, ProductResponseDTO.class);
-        return productResponse.getBody();
+
+        FakeStoreProductRequestDTO fakeStoreProductRequestDTO = ProductMapper.getFakeStoreProductRequestDTO(productRequestDTO);
+        FakeStoreProductResponseDTO fakeStoreProductResponseDTO = fakeStoreClient.createProduct(fakeStoreProductRequestDTO);
+        ProductResponseDTO productResponseDTO = ProductMapper.getProductResponseDTO(fakeStoreProductResponseDTO);
+
+        return productResponseDTO;
     }
 
     @Override
-    public Product updateProduct(ProductRequestDTO product) {
-        return null;
+    public boolean updateProduct(int id, ProductRequestDTO productRequestDTO) {
+
+        ProductResponseDTO productResponseDTO = getProductById(id);
+        FakeStoreProductRequestDTO fakeStoreProductRequestDTO = ProductMapper.getFakeStoreProductRequestDTO(productRequestDTO);
+        Boolean isProductUpdated = fakeStoreClient.updateProduct(id, fakeStoreProductRequestDTO);
+        return isProductUpdated;
     }
 
     @Override
-    public Product deleteProduct(ProductRequestDTO product) {
-        return null;
+    public boolean deleteProduct(int  id) {
+
+        return fakeStoreClient.deleteProduct(id);
     }
 }

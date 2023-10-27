@@ -11,7 +11,9 @@ public interface ProductService {
     List<ProductResponseDTO> getAllProducts();
     ProductResponseDTO getProductById(int id);
     ProductResponseDTO createProduct(ProductRequestDTO product);
-    Product updateProduct(ProductRequestDTO product);
-    Product deleteProduct(ProductRequestDTO product);
+
+    boolean updateProduct(int id, ProductRequestDTO productRequestDTO);
+
+    boolean deleteProduct(int id);
 
 }

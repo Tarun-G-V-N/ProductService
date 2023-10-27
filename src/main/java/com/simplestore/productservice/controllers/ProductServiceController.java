@@ -24,7 +24,7 @@ public class ProductServiceController {
         }
 
         @GetMapping("/products/{id}")
-        public ResponseEntity getTheProduct(@PathVariable int id) throws ProductNotFoundException{
+        public ResponseEntity getProductByID(@PathVariable int id) throws ProductNotFoundException{
 
             ProductResponseDTO productResponseDTO = productService.getProductById(id);
             return ResponseEntity.ok(productResponseDTO);
@@ -48,6 +48,20 @@ public class ProductServiceController {
 
             ProductResponseDTO productResponseDTO = productService.createProduct(productRequestDTO);
             return ResponseEntity.ok(productResponseDTO);
+        }
+        @PutMapping("/products/{id}")
+        public ResponseEntity updateProduct(@PathVariable int id, @RequestBody ProductRequestDTO productRequestDTO) {
+
+            if(productService.updateProduct(id, productRequestDTO)) return ResponseEntity.ok("Product updated Successfully");
+
+            return ResponseEntity.badRequest().body("Your request is not valid!!");
+        }
+        @DeleteMapping("/products/id")
+        public ResponseEntity deleteProduct(@PathVariable int id) {
+
+            if(productService.deleteProduct(id)) return ResponseEntity.ok("Product is deleted Successfully");
+
+            return ResponseEntity.badRequest().body("Your request is not valid!!");
         }
     }
 
