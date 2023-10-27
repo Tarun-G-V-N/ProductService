@@ -1,6 +1,7 @@
 package com.simplestore.productservice.controllers.controllerAdvice;
 
 import com.simplestore.productservice.exceptions.ProductNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,6 +12,6 @@ public class ProductControllerAdvice {
     public ResponseEntity handleProductNotFoundException(Exception ex) {
 
         String exceptionResponse = ex.getMessage();
-        return ResponseEntity.ok(exceptionResponse);
+        return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 }

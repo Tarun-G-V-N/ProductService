@@ -70,6 +70,7 @@ public class FakeStoreService implements ProductService{
     @Override
     public boolean deleteProduct(int  id) {
 
+        ProductResponseDTO productResponseDTO = getProductById(id);
         return fakeStoreClient.deleteProduct(id);
     }
 }

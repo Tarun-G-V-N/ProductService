@@ -56,7 +56,7 @@ public class ProductServiceController {
 
             return ResponseEntity.badRequest().body("Your request is not valid!!");
         }
-        @DeleteMapping("/products/id")
+        @DeleteMapping("/products/{id}")
         public ResponseEntity deleteProduct(@PathVariable int id) {
 
             if(productService.deleteProduct(id)) return ResponseEntity.ok("Product is deleted Successfully");
