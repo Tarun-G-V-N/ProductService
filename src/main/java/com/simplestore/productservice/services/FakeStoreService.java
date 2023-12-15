@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.simplestore.productservice.utils.ProductUtil.isNull;
 
@@ -40,12 +41,17 @@ public class FakeStoreService implements ProductService{
     }
 
     @Override
-    public ProductResponseDTO getProductById(int id) throws ProductNotFoundException{
+    public ProductResponseDTO getProductById(UUID id) throws ProductNotFoundException{
 
         FakeStoreProductResponseDTO fakeStoreProductResponseDTO = fakeStoreClient.getProductById(id);
         if(isNull(fakeStoreProductResponseDTO)) throw new ProductNotFoundException(id);
         ProductResponseDTO productResponseDTO = ProductMapper.getProductResponseDTO(fakeStoreProductResponseDTO);
         return productResponseDTO;
+    }
+
+    @Override
+    public ProductResponseDTO getProductByTitle(String title) {
+        return null;
     }
 
     @Override
@@ -59,7 +65,7 @@ public class FakeStoreService implements ProductService{
     }
 
     @Override
-    public boolean updateProduct(int id, ProductRequestDTO productRequestDTO) {
+    public boolean updateProduct(UUID id, ProductRequestDTO productRequestDTO) {
 
         ProductResponseDTO productResponseDTO = getProductById(id);
         FakeStoreProductRequestDTO fakeStoreProductRequestDTO = ProductMapper.getFakeStoreProductRequestDTO(productRequestDTO);
@@ -68,7 +74,7 @@ public class FakeStoreService implements ProductService{
     }
 
     @Override
-    public boolean deleteProduct(int  id) {
+    public boolean deleteProduct(UUID  id) {
 
         ProductResponseDTO productResponseDTO = getProductById(id);
         return fakeStoreClient.deleteProduct(id);

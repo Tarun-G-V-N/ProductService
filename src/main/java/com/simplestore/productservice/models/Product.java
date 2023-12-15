@@ -1,17 +1,24 @@
 package com.simplestore.productservice.models;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class Product {
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+public class Product extends BaseModel{
 
-    private int id;
     private String title;
-    private double price;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Price price;
     private String description;
-    private String category;
+    @ManyToOne
+    private Category category;
     private String image;
 
 }

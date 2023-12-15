@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.UUID;
+
 @Component
 public class FakeStoreClient {
 
@@ -23,7 +25,7 @@ public class FakeStoreClient {
         this.fakeStoreProductPath = fakeStoreProductPath;
     }
 
-    public FakeStoreProductResponseDTO getProductById(int id) {
+    public FakeStoreProductResponseDTO getProductById(UUID id) {
 
         RestTemplate restTemplate = restTemplateBuilder.build();
         String fakeStoreURL = fakeStorebaseURL + fakeStoreProductPath + id;
@@ -47,7 +49,7 @@ public class FakeStoreClient {
         return productResponse.getBody();
     }
 
-    public boolean updateProduct(int id, FakeStoreProductRequestDTO fakeStoreProductRequestDTO) {
+    public boolean updateProduct(UUID id, FakeStoreProductRequestDTO fakeStoreProductRequestDTO) {
 
         RestTemplate restTemplate = restTemplateBuilder.build();
         String fakeStoreURL = fakeStorebaseURL + fakeStoreProductPath + id;
@@ -55,7 +57,7 @@ public class FakeStoreClient {
         return true;
     }
 
-    public boolean deleteProduct(int id) {
+    public boolean deleteProduct(UUID id) {
 
         RestTemplate restTemplate = restTemplateBuilder.build();
         String fakeStoreURL = fakeStorebaseURL + fakeStoreProductPath + id;
